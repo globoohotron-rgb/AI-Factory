@@ -1,0 +1,149 @@
+# AI FACTORY — factory of agents and knowledge
+
+## Definition
+**AI FACTORY** is an architecture where a central agent (**Dispatcher**) creates and coordinates specialized sub-agents with their own PACK knowledge libraries. Together they function as a production line, serially delivering applied systems. The first product is an **automated trading system**.
+
+---
+
+## Strategic Map
+- **Diagnosis**: dependence on a single model, manual coordination, mixed roles.  
+- **Principles**: separation of duties, simple interfaces, fast iterations, strict version discipline.  
+- **Actions**: multi-role GPT architecture + standardized PACK libraries + auto-validation.
+
+---
+
+## Architecture
+- **Dispatcher (Router)**: receives tasks, routes them to roles.  
+- **Role-agents**:  
+  - Architect — decomposes requirements into modules, APIs, and contracts.  
+  - Programmer — writes code according to contracts.  
+  - Reviewer — performs static analysis, tests, code review.  
+  - Strategist/Quant — logic of signals, factors.  
+  - Data/ETL — pipelines, data quality validation.  
+  - Backtester — experiments, metrics, artifacts.  
+  - Risk Officer — stability checks, overfit control, limits.  
+- **Artifact Bus**: unified exchange protocol (issue → PR → tests → reports).
+
+---
+
+## PACK Libraries
+- `/libs/core`: utilities (timing, logging, I/O).  
+- `/libs/data`: data sources, quality checks, cache.  
+- `/libs/signals`: factors, feature rules.  
+- `/libs/models`: ML/strategies (fit/predict).  
+- `/libs/risk`: position sizing, stops, limits, VaR-style checks.  
+- `/libs/backtest`: engine, metrics, visualization, walk-forward.  
+- `/libs/exchange`: adapters to brokers/exchanges.  
+
+Each module includes: `README-contract`, examples, unit tests, entry/exit checklist.
+
+---
+
+## Prompt Patterns
+Invariant: **Role → Context → Constraints → Output Format → Self-check**.  
+- Architect: input = requirement, output = module list, API contracts, risks.  
+- Programmer: contract → code + tests; self-check = linter rules, complexity, edge cases.  
+- Backtester: range, cutoffs, walk-forward → metrics table + graphs; self-check = stratification, data leakage.
+
+---
+
+## Model Multiplication
+- Separate “personas” with instructions + PACK access.  
+- Prompt versioning (vX.Y).  
+- Pattern catalog (classification, generation, review).  
+- Quality control: A/B models, choose best by metrics.
+
+---
+
+## Iteration Control
+- Rhythm: daily sprints (morning = plan, evening = metrics report).  
+- Auto-gates: PR only accepted if tests = green, backtest ≥ benchmark, risk check = clear.  
+- Logs: each change records config, seed, metrics, artifacts.
+
+---
+
+## Eval Set (MVP Trading)
+- Data: minimum 3 markets × 3 regimes (trend, range, volatility).  
+- Metrics: CAGR, Sharpe, maxDD, Calmar, turnover, slippage-stress.  
+- Checks: walk-forward, time k-fold, out-of-sample, live-shadow.  
+- Anti-overfit: complexity penalty, randomization tests, White’s reality check (simplified).
+
+---
+
+## Contracts (Interfaces)
+- Strategy: `ingest(data) → fit(cfg) → predict(data) → positions`.  
+- Risk: `assess(positions, pnl, stress_cfg) → limits`.  
+- Backtest: `run(strategy, data, costs_cfg) → report(tables, graphs, artifacts)`.
+
+---
+
+## Operational Process
+- Any task = ticket: Role → Goal → Inputs → Constraints → Format → Done criteria.  
+- Dispatcher distributes tasks to agents.  
+- Reviewer blocks until Done criteria are satisfied.
+
+---
+
+## Migration Path
+1. Fix contracts for existing libraries.  
+2. Create role prompts (architect, programmer, reviewer, backtester, risk).  
+3. Implement CI gates (tests, minimal backtest, checklists).  
+4. Then expand markets/strategies following the same ritual.
+
+---
+
+## Risks
+- Agent zoo without contracts → chaos.  
+- Overfit/metric cargo cult → nice graphs, bad reality.  
+- Data bottlenecks → broken rhythm.  
+- Missing gates → quality decay.  
+- Single-prompt dependency → not scalable.
+
+---
+
+## Status (Roadmap)
+- **v0 — file prototype**: Dispatcher + agents, manual run via `queue_in` / `queue_out`.  
+- **v1 — queue/workers**: Redis/RabbitMQ for async tasks, SLA and retry policy.  
+- **v2 — web dashboard**: interactive interface, task monitoring, PACK management.  
+- **v3 — production modularity**: scaling the factory to other projects (business assistants, research, financial agents).
+
+---
+
+## ASCII Architecture Diagram
+
+                ┌─────────────────┐
+                │   TASK.json      │
+                │  (queue_in)      │
+                └────────┬────────┘
+                         │
+                         ▼
+                 ┌───────────────┐
+                 │  DISPATCHER   │
+                 │   (Router)    │
+                 └───┬─────┬─────┘
+                     │     │
+        ┌────────────┘     └─────────────┐
+        ▼                                ▼
+┌───────────────┐                ┌───────────────┐
+│  FILE-MAKER   │                │ TRADING-ANAL. │
+│  (PACK md)    │                │ plans.json    │
+└───────┬───────┘                └───────┬───────┘
+        │                                │
+        ▼                                ▼
+┌───────────────┐                ┌───────────────┐
+│ RISK-MANAGER  │                │ VIZ-ENGINEER  │
+│ checks.json   │                │ plots.png+md  │
+└───────────────┘                └───────────────┘
+
+                         ▼
+                ┌─────────────────┐
+                │   queue_out/    │
+                │ results, status │
+                └─────────────────┘
+
+---
+
+## About the Author
+Author: **Volodymyr Saldan**  
+Founder of the **AI FACTORY** concept (2025).  
+Focus: building structured, multi-agent systems with GPT to create real-world automation pipelines, starting with trading.
