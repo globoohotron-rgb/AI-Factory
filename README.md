@@ -1,3 +1,4 @@
+🌐 [English version](README_EN.md)
 # AI FACTORY — фабрика агентів і знань
 
 ## Визначення
